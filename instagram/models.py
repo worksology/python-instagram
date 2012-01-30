@@ -49,6 +49,7 @@ class Media(ApiModel):
             new_media.location = Location.object_from_dictionary(entry['location'])
 
         new_media.link = entry['link']
+        new_media.filter = entry['filter']
 
         return new_media
 
@@ -95,7 +96,7 @@ class Location(ApiModel):
             point = Point(entry.get('latitude'),
                           entry.get('longitude'))
         location = cls(entry.get('id'),
-                       point,
+                       point=point,
                        name=entry.get('name'))
         return location
 
