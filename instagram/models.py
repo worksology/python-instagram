@@ -44,10 +44,16 @@ class Media(ApiModel):
             new_media.comments.append(Comment.object_from_dictionary(comment))
 
         new_media.created_time = timestamp_to_datetime(entry['created_time'])
+    
+        if entry['caption']:
+            new_media.caption = entry['caption']['text']
+        else:
+            new_media.caption = ""
 
         if entry['location']:
             new_media.location = Location.object_from_dictionary(entry['location'])
 
+        new_media.tags = entry['tags']
         new_media.link = entry['link']
         new_media.filter = entry['filter']
 
@@ -91,14 +97,12 @@ class Location(ApiModel):
 
     @classmethod
     def object_from_dictionary(cls, entry):
-        point = None
-        if entry['latitude']:
-            point = Point(entry.get('latitude'),
-                          entry.get('longitude'))
-        location = cls(entry.get('id'),
-                       point=point,
-                       name=entry.get('name'))
-        return location
+        point = Point(entry.get('latitude'), entry.get('longitude')) or None
+        return cls(
+            id=entry.get('id'),
+            point=point,
+            name=entry.get('name')
+        )
 
 class User(ApiModel):
 
