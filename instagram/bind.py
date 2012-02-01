@@ -98,7 +98,7 @@ def bind_method(**config):
                         response_objects.append(obj)
                 elif self.response_type == 'entry':
                     response_objects = self.root_class.object_from_dictionary(content_obj['data'])
-                return response_objects, content_obj.get('pagination', {}).get('next_url') 
+                return response_objects, content_obj.get('pagination', {}).get('next_max_id') 
             else:
                 raise InstagramAPIError(status_code, content_obj['meta']['error_type'], content_obj['meta']['error_message'])
 
@@ -118,9 +118,9 @@ def bind_method(**config):
             if self.as_generator:
                 return self._paginator_with_url(url, method, body, headers)
             else:
-                content, next = self._do_api_request(url, method, body, headers)
+                content, next_max_id = self._do_api_request(url, method, body, headers)
             if self.paginates:
-                return content, next
+                return content, next_max_id
             else:
                 return content
 
